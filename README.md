@@ -73,6 +73,11 @@ Linux: [![Circle CI](https://circleci.com/gh/conda-forge/m4-feedstock.svg?style=
 OSX: [![TravisCI](https://travis-ci.org/conda-forge/m4-feedstock.svg?branch=master)](https://travis-ci.org/conda-forge/m4-feedstock) 
 Windows: [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/conda-forge/m4-feedstock?svg=True)](https://ci.appveyor.com/project/conda-forge/m4-feedstock/branch/master)
 
+Current release info
+====================
+Version: [![Anaconda-Server Badge](https://anaconda.org/conda-forge/m4/badges/version.svg)](https://anaconda.org/conda-forge/m4)
+Downloads: [![Anaconda-Server Badge](https://anaconda.org/conda-forge/m4/badges/downloads.svg)](https://anaconda.org/conda-forge/m4)
+
 
 Updating m4-feedstock
 =====================
