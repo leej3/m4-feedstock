@@ -5,7 +5,7 @@ Home: http://www.gnu.org/software/m4/
 
 Package license: GPL3
 
-Feedstock license: BSD
+Feedstock license: BSD 3-Clause
 
 Summary: Implementation of the traditional Unix macro processor.
 
