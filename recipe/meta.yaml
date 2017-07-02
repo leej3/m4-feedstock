@@ -13,6 +13,10 @@ build:
   number: 0
   skip: True  # [win]
 
+requirements:
+  build:
+    - {{ compiler('c') }}
+
 test:
   commands:
     - m4 --help
