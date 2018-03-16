@@ -1,4 +1,4 @@
-{% set version = "1.4.17" %}
+{% set version = "1.4.18" %}
 
 package:
   name: m4
@@ -7,10 +7,10 @@ package:
 source:
   fn: m4-{{ version }}.tar.gz
   url: http://ftp.gnu.org/gnu/m4/m4-{{ version }}.tar.gz
-  sha256: 3ce725133ee552b8b4baca7837fb772940b25e81b2a9dc92537aeaf733538c9e
+  sha256: ab2633921a5cd38e48797bf5521ad259bdc4b979078034a3b790d7fec5493fab
 
 build:
-  number: 1
+  number: 0
   skip: True  # [win]
 
 test:
