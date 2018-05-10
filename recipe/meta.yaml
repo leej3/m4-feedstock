@@ -5,12 +5,14 @@ package:
   version: {{ version }}
 
 source:
-  fn: m4-{{ version }}.tar.gz
   url: http://ftp.gnu.org/gnu/m4/m4-{{ version }}.tar.gz
   sha256: ab2633921a5cd38e48797bf5521ad259bdc4b979078034a3b790d7fec5493fab
+  patches:
+    # From Homebrew: https://raw.githubusercontent.com/macports/macports-ports/edf0ee1e2cf/devel/m4/files/secure_snprintf.patch
+    - secure_snprintf.patch
 
 build:
-  number: 0
+  number: 1
   skip: True  # [win]
 
 requirements:
