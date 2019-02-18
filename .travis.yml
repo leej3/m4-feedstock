@@ -12,6 +12,7 @@ matrix:
   include:
     - env: CONFIG=linux_ppc64le_ UPLOAD_PACKAGES=True platform=linux-ppc64le
       os: linux-ppc64le
+      language: python
     - env: CONFIG=osx_ UPLOAD_PACKAGES=True platform=osx-64
       os: osx
       osx_image: xcode9.4
@@ -21,9 +22,11 @@ before_install:
       echo ""
       echo "Maybe install python for ${platform}"
       if [[ ${platform} =~ .*linux.* ]]; then
-        sudo apt install python3-pip
+        sudo apt-get update
+        sudo apt-get install python3 python3-pip
         sudo pip install --upgrade pip
         sudo pip install setuptools shyaml
+        alias python='python3'
       fi
 
     # Fast finish the PR.
