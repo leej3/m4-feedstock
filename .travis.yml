@@ -17,6 +17,13 @@ matrix:
       osx_image: xcode9.4
 
 before_install:
+    - |
+      if [ "$TRAVIS_OS_NAME" == "linux*" ]; then
+        sudo apt install python3-pip
+        sudo pip install --upgrade pip
+        sudo pip install setuptools shyaml
+      fi
+
     # Fast finish the PR.
     - (curl https://raw.githubusercontent.com/conda-forge/conda-forge-ci-setup-feedstock/master/recipe/conda_forge_ci_setup/ff_ci_pr_build.py | \
           python - -v --ci "travis" "${TRAVIS_REPO_SLUG}" "${TRAVIS_BUILD_NUMBER}" "${TRAVIS_PULL_REQUEST}") || exit 1
@@ -29,12 +36,6 @@ before_install:
         chmod +x ~/uninstall_homebrew
         ~/uninstall_homebrew -fq
         rm ~/uninstall_homebrew
-      fi
-    - |
-      if [ "$TRAVIS_OS_NAME" == "linux*" ]; then
-        sudo apt install python3-pip
-        sudo pip install --upgrade pip
-        sudo pip install setuptools shyaml
       fi
 
 install:
