@@ -96,6 +96,6 @@ script:
   # TODO make this check better 
 
   - |
-    if [[ ${platform} =~ .*linux.*" ]]; then
+    if [[ ${platform} =~ .*linux.* ]]; then
       ./.travis/run_docker_build.sh
     fi
