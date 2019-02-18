@@ -19,8 +19,8 @@ matrix:
 before_install:
     - |
       echo ""
-      echo "Maybe install python for $(platform)"
-      if [[ "${platform}" == "linux.*" ]]; then
+      echo "Maybe install python for ${platform}"
+      if [[ "${platform}" =~ "linux.*" ]]; then
         sudo apt install python3-pip
         sudo pip install --upgrade pip
         sudo pip install setuptools shyaml
@@ -86,6 +86,6 @@ script:
   # TODO make this check better 
 
   - |
-    if [[ "${platform}" == "linux.*" ]]; then
+    if [[ "${platform}" =~ "linux.*" ]]; then
       ./.travis/run_docker_build.sh
     fi
