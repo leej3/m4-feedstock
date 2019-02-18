@@ -4,62 +4,80 @@
 
 language: generic
 
-os: osx
-osx_image: xcode9.4
-
-
 env:
-  matrix:
-    - CONFIG=osx_
-
   global:
     # The BINSTAR_TOKEN secure variable. This is defined canonically in conda-forge.yml.
     - secure: "VntS9UUZeJh5A8qiwU0/egA6J5PoifrxuBKPfxEg/Oog7U+GUav1H6SXCOrcMZ0BUYfLxOYj71OPU1L5UDKPaRdkbsUSvQDcqW8Rh3lzE9UT4u/iQuWWYfG0M3zZyH6gNpQkIWgaRAshKPMzi6hSTFEWwvJED8GZPvmZwgm3UYktENl+n/GVJYXLquMoCdL/Z2z0tFvJ2iucNnVaceM4DZEq4LJy7IcVrW0khk/fzjQZkrekbtQ5pHgxUKOBdmM2U1WftdzjEBlukkDa5yfRsTzuIK/6vpyhspvH3okDUFIhkjH4WowqWTqKDzJFbCurjb9hZLaTOxI6362XBh3K3DT4wW7YQ7pAGYyQQK5FneN4YAq8uzoka5gXD3vM7hFIDc383sprEHNp6T4+sYl6H+pCqRP2HmdCGBlm+FGsdSIkaOYGJW809n7fOnfV5mz3pkhrsJiI1RNPXlgg+90o1ydVR1K3ZjO0keVnsJa+V/q/4CBqJaD757IMjji3z6/Q0F14CgZdWmrPU6oMo8gxA+s7gp2ys5tYqrvfaKfgS/aIdfKRbfoXDjMbK7p8fAgaKI10cqU88efMx108OOOpPdEwCzVpj4XoCiiUdGymTAMjErSICis/RZnajX8+9QCPBR8r99YBkc1QXf7hPrrfwmJJzUvTiBGTGXQioDha8gE="
 
+matrix:
+  include:
+    - env: CONFIG=linux_ppc64le_ UPLOAD_PACKAGES=True
+      os: linux-ppc64le
+    - env: CONFIG=osx_ UPLOAD_PACKAGES=True
+      os: osx
+      osx_image: xcode9.4
 
 before_install:
     # Fast finish the PR.
-    - |
-      (curl https://raw.githubusercontent.com/conda-forge/conda-forge-ci-setup-feedstock/master/recipe/conda_forge_ci_setup/ff_ci_pr_build.py | \
+    - (curl https://raw.githubusercontent.com/conda-forge/conda-forge-ci-setup-feedstock/master/recipe/conda_forge_ci_setup/ff_ci_pr_build.py | \
           python - -v --ci "travis" "${TRAVIS_REPO_SLUG}" "${TRAVIS_BUILD_NUMBER}" "${TRAVIS_PULL_REQUEST}") || exit 1
-
-    # Remove homebrew.
+    # Remove homebrew in osx
     - |
-      echo ""
-      echo "Removing homebrew from Travis CI to avoid conflicts."
-      curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall > ~/uninstall_homebrew
-      chmod +x ~/uninstall_homebrew
-      ~/uninstall_homebrew -fq
-      rm ~/uninstall_homebrew
-
+      if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+        echo ""
+        echo "Removing homebrew from Travis CI to avoid conflicts."
+        curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall > ~/uninstall_homebrew
+        chmod +x ~/uninstall_homebrew
+        ~/uninstall_homebrew -fq
+        rm ~/uninstall_homebrew
+      fi
 
 install:
     # Install Miniconda.
     - |
-      echo ""
-      echo "Installing a fresh version of Miniconda."
-      MINICONDA_URL="https://repo.continuum.io/miniconda"
-      MINICONDA_FILE="Miniconda3-latest-MacOSX-x86_64.sh"
-      curl -L -O "${MINICONDA_URL}/${MINICONDA_FILE}"
-      bash $MINICONDA_FILE -b
+      if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+        echo ""
+        echo "Installing a fresh version of Miniconda."
+        MINICONDA_URL="https://repo.continuum.io/miniconda"
+        MINICONDA_FILE="Miniconda3-latest-MacOSX-x86_64.sh"
+        curl -L -O "${MINICONDA_URL}/${MINICONDA_FILE}"
+        bash $MINICONDA_FILE -b
+      fi
 
     # Configure conda.
     - |
-      echo ""
-      echo "Configuring conda."
-      source /Users/travis/miniconda3/bin/activate root
+      if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+        echo ""
+        echo "Configuring conda."
+        source /Users/travis/miniconda3/bin/activate root
 
-      conda install -n root -c conda-forge --quiet --yes conda-forge-ci-setup=2 conda-build
-      setup_conda_rc ./ ./recipe ./.ci_support/${CONFIG}.yaml
+        conda install -n root -c conda-forge --quiet --yes conda-forge-ci-setup=2 conda-build
+        setup_conda_rc ./ ./recipe ./.ci_support/${CONFIG}.yaml
 
-      source run_conda_forge_build_setup
+        source run_conda_forge_build_setup
+      fi
 
     # compiler cleanup
     - |
-      mangle_compiler ./ ./recipe ./.ci_support/${CONFIG}.yaml
+      if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+        mangle_compiler ./ ./recipe ./.ci_support/${CONFIG}.yaml
+      fi
 
 script:
-  # generate the build number clobber
-  - make_build_number ./ ./recipe ./.ci_support/${CONFIG}.yaml
-  -  conda build ./recipe -m ./.ci_support/${CONFIG}.yaml --clobber-file ./.ci_support/clobber_${CONFIG}.yaml
-  - upload_package ./ ./recipe ./.ci_support/${CONFIG}.yaml
+  - |
+    if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+      # generate the build number clobber
+      make_build_number ./ ./recipe ./.ci_support/${CONFIG}.yaml
+       conda build ./recipe -m ./.ci_support/${CONFIG}.yaml --clobber-file ./.ci_support/clobber_${CONFIG}.yaml
+      
+      if [[ "${UPLOAD_PACKAGES}" != "False" ]]; then
+        upload_package ./ ./recipe ./.ci_support/${CONFIG}.yaml
+      fi
+    fi
+
+  # TODO make this check better 
+
+  - |
+    if [ "$TRAVIS_OS_NAME" == "linux*" ]; then
+      ./.travis/run_docker_build.sh
+    fi
