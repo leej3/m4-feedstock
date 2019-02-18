@@ -10,17 +10,17 @@ env:
 
 matrix:
   include:
-    - env: CONFIG=linux_ppc64le_ UPLOAD_PACKAGES=True
+    - env: CONFIG=linux_ppc64le_ UPLOAD_PACKAGES=True platform=linux-ppc64le
       os: linux-ppc64le
-    - env: CONFIG=osx_ UPLOAD_PACKAGES=True
+    - env: CONFIG=osx_ UPLOAD_PACKAGES=True platform=osx-64
       os: osx
       osx_image: xcode9.4
 
 before_install:
     - |
       echo ""
-      echo "Maybe install python for $TRAVIS_OS_NAME"  
-      if [[ "$TRAVIS_OS_NAME" == "linux.*" ]]; then
+      echo "Maybe install python for $(platform)"
+      if [[ "${platform}" == "linux.*" ]]; then
         sudo apt install python3-pip
         sudo pip install --upgrade pip
         sudo pip install setuptools shyaml
@@ -31,7 +31,7 @@ before_install:
           python - -v --ci "travis" "${TRAVIS_REPO_SLUG}" "${TRAVIS_BUILD_NUMBER}" "${TRAVIS_PULL_REQUEST}") || exit 1
     # Remove homebrew in osx
     - |
-      if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+      if [ "${platform}" == "osx-64" ]; then
         echo ""
         echo "Removing homebrew from Travis CI to avoid conflicts."
         curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall > ~/uninstall_homebrew
@@ -43,7 +43,7 @@ before_install:
 install:
     # Install Miniconda.
     - |
-      if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+      if [ "${platform}" == "osx-64" ]; then
         echo ""
         echo "Installing a fresh version of Miniconda."
         MINICONDA_URL="https://repo.continuum.io/miniconda"
@@ -54,7 +54,7 @@ install:
 
     # Configure conda.
     - |
-      if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+      if [ "${platform}" == "osx-64" ]; then
         echo ""
         echo "Configuring conda."
         source /Users/travis/miniconda3/bin/activate root
@@ -67,13 +67,13 @@ install:
 
     # compiler cleanup
     - |
-      if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+      if [ "${platform}" == "osx-64" ]; then
         mangle_compiler ./ ./recipe ./.ci_support/${CONFIG}.yaml
       fi
 
 script:
   - |
-    if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    if [ "${platform}" == "osx-64" ]; then
       # generate the build number clobber
       make_build_number ./ ./recipe ./.ci_support/${CONFIG}.yaml
        conda build ./recipe -m ./.ci_support/${CONFIG}.yaml --clobber-file ./.ci_support/clobber_${CONFIG}.yaml
@@ -86,6 +86,6 @@ script:
   # TODO make this check better 
 
   - |
-    if [[ "$TRAVIS_OS_NAME" == "linux.*" ]]; then
+    if [[ "${platform}" == "linux.*" ]]; then
       ./.travis/run_docker_build.sh
     fi
