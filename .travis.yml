@@ -26,7 +26,7 @@ before_install:
         sudo pip3 install --upgrade pip
         sudo pip3 install setuptools shyaml
         # force having a python symlink
-        ln -fs /usr/bin/python3 /usr/bin/python
+        sudo ln -fs /usr/bin/python3 /usr/bin/python
       fi
 
     # Fast finish the PR.
