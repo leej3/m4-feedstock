@@ -23,7 +23,7 @@ arithmetic, etc.
 Current build status
 ====================
 
-[![Linux](https://img.shields.io/circleci/project/github/conda-forge/m4-feedstock/master.svg?label=Linux)](https://circleci.com/gh/conda-forge/m4-feedstock)
+[![](https://img.shields.io/circleci/project/github/conda-forge/m4-feedstock/master.svg?label=)](https://circleci.com/gh/conda-forge/m4-feedstock)
 [![OSX](https://img.shields.io/travis/conda-forge/m4-feedstock/master.svg?label=macOS)](https://travis-ci.org/conda-forge/m4-feedstock)
 ![Windows disabled](https://img.shields.io/badge/Windows-disabled-lightgrey.svg)
 
