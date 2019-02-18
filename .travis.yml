@@ -32,8 +32,13 @@ before_install:
       fi
 
     # Fast finish the PR.
-    - (curl https://raw.githubusercontent.com/conda-forge/conda-forge-ci-setup-feedstock/master/recipe/conda_forge_ci_setup/ff_ci_pr_build.py | \
+    - 
+      if [ "${platform}" == "osx-64" ]; then
+      # for some reason this only works for osx, since we don't actually plan on building
+      # lots of artifacts for ppc64le here
+      (curl https://raw.githubusercontent.com/conda-forge/conda-forge-ci-setup-feedstock/master/recipe/conda_forge_ci_setup/ff_ci_pr_build.py | \
           python - -v --ci "travis" "${TRAVIS_REPO_SLUG}" "${TRAVIS_BUILD_NUMBER}" "${TRAVIS_PULL_REQUEST}") || exit 1
+      fi
     # Remove homebrew in osx
     - |
       if [ "${platform}" == "osx-64" ]; then
