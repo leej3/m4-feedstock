@@ -2,6 +2,7 @@
 
 ./configure --prefix=${PREFIX} --host=${HOST}
 make -j${CPU_COUNT} ${VERBOSE_AT}
+
 # TODO :: Skipped on macOS because of a single test failure:
 #
 # Checking ./189.eval
@@ -20,13 +21,14 @@ make -j${CPU_COUNT} ${VERBOSE_AT}
 #  0
 #  -2
 #  -2
+if [[ ${target_platform} =~ .*osx.* ]]; then
+    rm checks/189.sysval
+fi
 
 # this particular test has issues running on ppc64le.  We're skipping it for now
 if [[ ${target_platform} =~ .*ppc.* ]]; then
     rm checks/198.sysval
 fi
 
-if [[ ! ${HOST} =~ .*darwin.* ]]; then
-  make check
-fi
+make check
 make install
