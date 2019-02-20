@@ -21,7 +21,7 @@ make -j${CPU_COUNT} ${VERBOSE_AT}
 #  0
 #  -2
 #  -2
-if [[ ${target_platform} =~ .*osx.* ]]; then
+if [[ ${platform} =~ .*osx.* ]]; then
     rm checks/189.sysval
 fi
 
@@ -30,5 +30,5 @@ if [[ ${target_platform} =~ .*ppc.* ]]; then
     rm checks/198.sysval
 fi
 
-make check || { cat "TEST RESULTS"; cat tests/test-suite.log; exit 1; }
+make check || { echo "TEST RESULTS"; cat tests/test-suite.log; exit 1; }
 make install
