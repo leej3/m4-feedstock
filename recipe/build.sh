@@ -30,5 +30,5 @@ if [[ ${target_platform} =~ .*ppc.* ]]; then
     rm checks/198.sysval
 fi
 
-make check
+make check || { cat "TEST RESULTS"; cat tests/test-suite.log; exit 1; }
 make install
