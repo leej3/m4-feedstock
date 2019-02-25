@@ -23,6 +23,7 @@ make -j${CPU_COUNT} ${VERBOSE_AT}
 #  -2
 if [[ ${platform} =~ .*osx.* ]]; then
     rm checks/189.sysval
+    rm checks/189.eval
     make check || { echo "TEST RESULTS"; cat tests/test-suite.log; true; }
 # this particular test has issues running on ppc64le.  We're skipping it for now
 elif [[ ${target_platform} =~ .*ppc.* ]]; then
