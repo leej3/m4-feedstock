@@ -21,7 +21,7 @@ make -j${CPU_COUNT} ${VERBOSE_AT}
 #  0
 #  -2
 #  -2
-if [[ ${platform} =~ .*osx.* ]]; then
+if [[ ${target_platform} =~ .*osx.* ]]; then
     rm checks/189.*
     make check || { echo "TEST RESULTS"; cat tests/test-suite.log; true; }
 # this particular test has issues running on ppc64le.  We're skipping it for now
