@@ -23,12 +23,12 @@ make -j${CPU_COUNT} ${VERBOSE_AT}
 #  -2
 if [[ ${platform} =~ .*osx.* ]]; then
     rm checks/189.sysval
-fi
-
+    make check || { echo "TEST RESULTS"; cat tests/test-suite.log; true; }
 # this particular test has issues running on ppc64le.  We're skipping it for now
-if [[ ${target_platform} =~ .*ppc.* ]]; then
+elif [[ ${target_platform} =~ .*ppc.* ]]; then
     rm checks/198.sysval
+    make check || { echo "TEST RESULTS"; cat tests/test-suite.log; true; }
+else
+    make check || { echo "TEST RESULTS"; cat tests/test-suite.log; exit 1; }
 fi
-
-make check || { echo "TEST RESULTS"; cat tests/test-suite.log; exit 1; }
 make install
