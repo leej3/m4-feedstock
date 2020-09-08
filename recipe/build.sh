@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Get an updated config.sub and config.guess
+cp $BUILD_PREFIX/share/libtool/build-aux/config.* build-aux/
+
 ./configure --prefix=${PREFIX} --host=${HOST}
 make -j${CPU_COUNT} ${VERBOSE_AT}
 
@@ -21,14 +24,16 @@ make -j${CPU_COUNT} ${VERBOSE_AT}
 #  0
 #  -2
 #  -2
-if [[ ${target_platform} =~ .*osx.* ]]; then
-    rm checks/189.*
-    make check || { echo "TEST RESULTS"; cat tests/test-suite.log; true; }
-# this particular test has issues running on ppc64le.  We're skipping it for now
-elif [[ ${target_platform} =~ .*ppc.* ]]; then
-    rm checks/198.*
-    make check || { echo "TEST RESULTS"; cat tests/test-suite.log; true; }
-else
-    make check || { echo "TEST RESULTS"; cat tests/test-suite.log; exit 1; }
+if [[ "$CONDA_BUILD_CROSS_COMPILATION" != "1" ]]; then
+    if [[ ${target_platform} =~ .*osx.* ]]; then
+        rm checks/189.*
+        make check || { echo "TEST RESULTS"; cat tests/test-suite.log; true; }
+    # this particular test has issues running on ppc64le.  We're skipping it for now
+    elif [[ ${target_platform} =~ .*ppc.* ]]; then
+        rm checks/198.*
+        make check || { echo "TEST RESULTS"; cat tests/test-suite.log; true; }
+    else
+        make check || { echo "TEST RESULTS"; cat tests/test-suite.log; exit 1; }
+    fi
 fi
 make install
