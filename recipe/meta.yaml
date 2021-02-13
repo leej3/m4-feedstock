@@ -28,8 +28,8 @@ requirements:
     - {{ compiler('c') }}
 {% if bootstrapping != 'yes' %}
     - libtool
-{% endif %}
     - make
+{% endif %}
 
 test:
   commands:
